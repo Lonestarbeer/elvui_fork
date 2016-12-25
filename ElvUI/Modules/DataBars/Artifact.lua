@@ -155,7 +155,11 @@ local function GetAPFromTooltip(itemLink)
 	mod.artifactBar.tooltip:ClearLines()
 	--We need to use SetHyperlink, as SetItemByID doesn't work for items you looted before gaining Artifact Knowledge level.
 	--For those items it would display a value higher than what you would actually get.
-	mod.artifactBar.tooltip:SetHyperlink(itemLink) 
+	--We also need to use pcall to trap errors that will occur when supplying itemLink for certain items (caged pets among others)
+	local success = pcall(mod.artifactBar.tooltip.SetHyperlink, mod.artifactBar.tooltip, itemLink)
+	if (not success) then
+		return nil
+	end
 
 	local apFound
 	if (mod.artifactBar.tooltipLines[2]:GetText() == AP_NAME) then
@@ -209,11 +213,6 @@ local function ItemGrantsAP(itemID, itemLink)
 	end
 end
 
---Blacklisted item IDs, these cause error when used with :SetHyperlink
-local blacklistedItemID = {
-	[82800] = true, --Pet Cage
-}
-
 function mod:GetArtifactPowerInBags()
 	if InCombatLockdown() then
 		return self.artifactBar.LastKnownAP
@@ -226,7 +225,7 @@ function mod:GetArtifactPowerInBags()
 			ID = select(10, GetContainerItemInfo(bag, slot))
 			link = GetContainerItemLink(bag, slot)
 
-			if (ID and link and not blacklistedItemID[ID] and ItemGrantsAP(ID, link)) then
+			if (ID and link and ItemGrantsAP(ID, link)) then
 				AP = GetAPForItem(link)
 				self.artifactBar.BagArtifactPower = self.artifactBar.BagArtifactPower + AP
 			end
