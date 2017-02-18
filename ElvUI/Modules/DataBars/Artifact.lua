@@ -1,5 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local mod = E:GetModule('DataBars');
+local LSM = LibStub("LibSharedMedia-3.0")
 
 --Cache global variables
 --Lua functions
@@ -78,6 +79,8 @@ function mod:UpdateArtifact(event, unit)
 			text = format('%s', E:ShortValue(xpForNextPoint - xp))
 		elseif textFormat == 'CURREM' then
 			text = format('%s - %s', E:ShortValue(xp), E:ShortValue(xpForNextPoint - xp))
+		elseif textFormat == 'CURPERCREM' then
+			text = format('%s - %d%% (%s)', E:ShortValue(xp), xp / xpForNextPoint * 100, E:ShortValue(xpForNextPoint - xp))
 		end
 
 		bar.text:SetText(text)
@@ -124,7 +127,7 @@ function mod:UpdateArtifactDimensions()
 	self.artifactBar.bagValue:SetOrientation(self.db.artifact.orientation)
 	self.artifactBar.bagValue:SetReverseFill(self.db.artifact.reverseFill)
 
-	self.artifactBar.text:FontTemplate(nil, self.db.artifact.textSize)
+	self.artifactBar.text:FontTemplate(LSM:Fetch("font", self.db.artifact.font), self.db.artifact.textSize, self.db.artifact.fontOutline)
 	if self.db.artifact.mouseover then
 		self.artifactBar:SetAlpha(0)
 	else
