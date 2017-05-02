@@ -100,6 +100,7 @@ local function LoadSkin()
 		if not line.ProgressBar.Bar.backdrop then
 			line.ProgressBar.Bar:Height(18)
 			line.ProgressBar.Bar:CreateBackdrop("Transparent")
+			line.ProgressBar.Bar:SetStatusBarTexture(E["media"].normTex)
 			line.ProgressBar.Bar.BarFrame:Hide()
 			line.ProgressBar.Bar.IconBG:SetAlpha(0)
 			line.ProgressBar.Bar.BarFrame2:Hide()
@@ -113,6 +114,8 @@ local function LoadSkin()
 			line.ProgressBar:CreateBackdrop("Default")
 			line.ProgressBar.backdrop:SetOutside(line.ProgressBar.Bar.Icon)
 		end
+
+		line.ProgressBar.backdrop:SetShown(line.ProgressBar.Bar.Icon:IsShown())
 	end)
 
 	hooksecurefunc(WORLD_QUEST_TRACKER_MODULE, "AddObjective", function(_, block)
