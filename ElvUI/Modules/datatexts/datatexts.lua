@@ -30,7 +30,7 @@ function DT:Initialize()
 	self:RegisterCustomCurrencyDT() --Register all the user created currency datatexts from the "CustomCurrency" DT.
 	self:LoadDataTexts()
 
-	self:RegisterEvent('PLAYER_ENTERING_WORLD', 'LoadDataTexts')
+	self:RegisterEvent('PLAYER_ENTERING_WORLD')
 	--self:RegisterEvent('ZONE_CHANGED_NEW_AREA', 'LoadDataTexts') -- is this needed??
 end
 
@@ -43,37 +43,40 @@ DT.PointLocation = {
 	[3] = 'right',
 }
 
+local hasEnteredWorld = false
+function DT:PLAYER_ENTERING_WORLD()
+	hasEnteredWorld = true
+	self:LoadDataTexts()
+end
+
+local function LoadDataTextsDelayed()
+	C_Timer.After(0.5, function() DT:LoadDataTexts() end)
+end
+
 local hex = '|cffFFFFFF'
 function DT:SetupObjectLDB(name, obj) --self will now be the event
-	local OnEnter = nil;
-	local OnLeave = nil;
-	local OnClick = nil;
 	local curFrame = nil;
-	if obj.OnTooltipShow then
-		function OnEnter(self)
-			DT:SetupTooltip(self)
+
+	local function OnEnter(self)
+		DT:SetupTooltip(self)
+		if obj.OnTooltipShow then
 			obj.OnTooltipShow(DT.tooltip)
-			DT.tooltip:Show()
 		end
-	end
-
-	if obj.OnEnter then
-		function OnEnter(self)
-			DT:SetupTooltip(self)
+		if obj.OnEnter then
 			obj.OnEnter(self)
-			DT.tooltip:Show()
 		end
+		DT.tooltip:Show()
 	end
 
-	if obj.OnLeave then
-		function OnLeave(self)
+	local function OnLeave(self)
+		if obj.OnLeave then
 			obj.OnLeave(self)
-			DT.tooltip:Hide()
 		end
+		DT.tooltip:Hide()
 	end
 
-	if obj.OnClick then
-		function OnClick(self, button)
+	local function OnClick(self, button)
+		if obj.OnClick then
 			obj.OnClick(self, button)
 		end
 	end
@@ -94,9 +97,15 @@ function DT:SetupObjectLDB(name, obj) --self will now be the event
 	end
 
 	DT:RegisterDatatext(name, {'PLAYER_ENTER_WORLD'}, OnEvent, nil, OnClick, OnEnter, OnLeave)
-	
+
+	--Update config if it has been loaded
 	if DT.PanelLayoutOptions then
-		DT:PanelLayoutOptions() --Update config
+		DT:PanelLayoutOptions()
+	end
+
+	--Force an update for objects that are created after we log in.
+	if hasEnteredWorld then
+		LoadDataTextsDelayed() --Has to be delayed in order to properly pick up initial text
 	end
 end
 
