@@ -1,5 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file='nameplates.lua'/>
+	<Script file='StyleFilter.lua'/>
 	<Script file='elements\healthBar.lua'/>
 	<Script file='elements\powerBar.lua'/>
 	<Script file='elements\castBar.lua'/>
@@ -14,4 +15,5 @@
 	<Script file='elements\elite.lua'/>
 	<Script file='elements\Detection.lua'/>
 	<Script file='elements\highlight.lua'/>
+	<Script file='elements\portrait.lua'/>
 </Ui>

@@ -1,4 +1,4 @@
-﻿local E, L, V, P, G = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+﻿local E, L, V, P, G = unpack(select(2, ...)); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 
 --Global Settings
 G['general'] = {
@@ -15,12 +15,11 @@ G['general'] = {
 		["yOffset"] = 0,
 	},
 	["disableTutorialButtons"] = true,
+	["showMissingTalentAlert"] = false,
 	["commandBarSetting"] = "ENABLED_RESIZEPARENT",
 }
 
 G['classtimer'] = {}
-
-G["nameplate"] = {}
 
 G["chat"] = {
 	["classColorMentionExcludedNames"] = {},
@@ -34,9 +33,15 @@ G["datatexts"] = {
 	["customCurrencies"] = {},
 }
 
+G["nameplate"] = {}
+
 G['unitframe'] = {
 	['aurafilters'] = {},
 	['buffwatch'] = {},
+	["raidDebuffIndicator"] = {
+		["instanceFilter"] = "RaidDebuffs",
+		["otherFilter"] = "CCDebuffs",
+	},
 	["spellRangeCheck"] = {
 		["PRIEST"] = {
 			["enemySpells"] = {
